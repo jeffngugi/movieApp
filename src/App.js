@@ -1,11 +1,13 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import {NavigationContainer} from '@react-navigation/native'
+import RootNavigation from './navigation/RootNavigation'
 
 const App = () => {
     return (
-        <View>
-            <Text>My app goes here</Text>
-        </View>
+       <NavigationContainer>
+           <RootNavigation />
+       </NavigationContainer>
     )
 }
 
