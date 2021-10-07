@@ -2,27 +2,35 @@ import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native'
 import {icons, images} from '../constants'
 import {Rating, AirbnbRating} from 'react-native-ratings'
+const POSTER_URL = "http://image.tmdb.org/t/p/w185"
 
-const MovieCard = ({navigation}) => {
+const MovieCard = ({navigation, movie, index, home}) => {
+    const {original_title, vote_average,poster_path, id} = movie
+    const imgUri =POSTER_URL+poster_path
+    // const imgUri = "http://image.tmdb.org/t/p/w185/rjkmN1dniUHVYAtwuV3Tji7FsDO.jpg"
     return (
         <TouchableOpacity
-           onPress={()=>navigation.navigate('Detail')}
-           style={styles.container}>
+           onPress={()=>navigation.navigate('Detail',{itemID:id, movie:movie})}
+           style={{backgroundColor:home && index == 0 ? "#007CFF":"#1B1C2A",
+                    ...styles.container, 
+                }}>
             <View style={styles.imageContainer}> 
                 <Image
-                    source={images.movie}
+                    source={{uri:imgUri}}
                     style={styles.image}
                 />
             </View>
             <View style={styles.info}>
-                <View style={styles.topMovie}>
-
-                    <Image source={icons.medal}
-                           style={styles.topIcon}
-                    />
-                <Text style={styles.topText}>Top Movie this week</Text>
-                </View>
-               <Text style={styles.title}>How to Train your Dragon: The Hidden World</Text>
+                {
+                   home && index == 0 &&  ( <View style={styles.topMovie}>
+                        <Image source={icons.medal}
+                            style={styles.topIcon}
+                        />
+                        <Text style={styles.topText}>Top Movie this week</Text>
+                    </View>)
+                }
+                
+               <Text style={styles.title}>{original_title}</Text>
                <Text style={styles.genre}>Fantasy/Action</Text>
                <Text style={styles.year}>2019</Text>
                <View style={styles.rating}>
@@ -31,10 +39,13 @@ const MovieCard = ({navigation}) => {
                     reviewSize={5}
                     count={5}
                     size={8}
-                    defaultRating={2}
+                    defaultRating={vote_average/2}
                     starContainerStyle={{
                         borderColor:'white',
                         opacity:2
+                    }}
+                    ratingContainerStyle={{
+                        opacity:5
                     }}
                 />
             </View>
@@ -48,7 +59,7 @@ export default MovieCard
 
 const styles = StyleSheet.create({
     container:{
-        backgroundColor:'#1B1C2A',
+        // backgroundColor:index == 0? "#007CFF":"#1B1C2A",
         flexDirection:'row',
         borderRadius:10, 
         marginVertical:5

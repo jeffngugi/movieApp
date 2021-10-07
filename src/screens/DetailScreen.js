@@ -3,28 +3,38 @@ import { StyleSheet, Text, Image, View, SafeAreaView, Dimensions, ImageBackgroun
 import { MovieCard } from '../components'
 const {width, height} = Dimensions.get("window")
 import {images, icons} from '../constants'
+import {  useSelector, shallowEqual} from 'react-redux'
 import LinearGradient from 'react-native-linear-gradient'
-import { Rating, AirbnbRating } from 'react-native-ratings';
+import {  AirbnbRating } from 'react-native-ratings';
+const POSTER_URL = "http://image.tmdb.org/t/p/w185"
 
 
-const DetailScreen = ({navigation: { goBack }}) => {
+
+const DetailScreen = ({route, navigation}) => {
+    const {movies, loading} = useSelector(state => state.movies, shallowEqual)
+    
+    const { itemId, movie } = route.params;
+    const {original_title,overview,vote_average,poster_path,id } = movie
+    const imgUri =POSTER_URL+poster_path
+    const myMovies = movies.filter(movie => movie.id !== id)
+
     return (
         <SafeAreaView
             style={styles.container}
         >
             <View style={styles.main}>
-                <ImageBackground source={images.movie} style={styles.mainImage}>
+                <ImageBackground source={{uri:imgUri}} style={styles.mainImage}>
                     <LinearGradient
                         colors={['transparent',"#070818"]}
                         style={styles.linearGradient}
                     >
                     <TouchableOpacity style={styles.back}
-                        onPress={()=>goBack()}
+                        onPress={()=>navigation.goBack()}
                     >
                         <Image source={icons.back} style={styles.backIcon} resizeMode='contain'/>
                     </TouchableOpacity>
                     <View style={styles.mainContainer}>
-                        <Text style={styles.title}>Captain Marvel</Text>
+                        <Text style={styles.title}>{original_title}</Text>
                         <View style={styles.tags}>
                             <Text style={styles.tag}>2019</Text>
                             <Image source={icons.circle} style={styles.circle} />
@@ -33,7 +43,7 @@ const DetailScreen = ({navigation: { goBack }}) => {
                             <Text style={styles.tag}>2h 5m</Text>
                         </View>
                         <Text style={styles.description}>
-                        Captain Marvel is an extraterrestrial Kree warrior who finds herself caught in the middle of an intergalactic battle between her people and the Skrulls. Living on Earth in 1995, she keeps having recurring memories of another life as U.S. Air Force pilot Carol Danvers. With help from Nick Fury,
+                        {overview}
                         </Text>
                         <View style={styles.reviews}>
                             <AirbnbRating
@@ -41,7 +51,7 @@ const DetailScreen = ({navigation: { goBack }}) => {
                                 reviewSize={5}
                                 count={5}
                                 size={13}
-                                defaultRating={2}
+                                defaultRating={vote_average/2}
                                 starContainerStyle={{
                                     borderColor:'white',
                                     opacity:2
@@ -58,11 +68,13 @@ const DetailScreen = ({navigation: { goBack }}) => {
                 <ScrollView
                     style={styles.trending}
                 >
-                    <MovieCard />
-                    <MovieCard />
-                    <MovieCard />
-                    <MovieCard />
-                </ScrollView>
+                    {
+                        
+                        myMovies.map((movie, index) => <MovieCard key={`${movie.id}`} movie={movie} navigation={navigation} index={index} />)
+                    }
+                        
+                        </ScrollView>
+                    
             </View>
             
             

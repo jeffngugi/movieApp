@@ -1,9 +1,24 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView} from 'react-native'
 import {icons} from '../constants/index'
 import {MovieCard} from '../components'
+import { useDispatch, useSelector, shallowEqual} from 'react-redux'
+import {getTrending} from '../redux/actions/movieAction'
 
 const ListScreen = ({navigation}) => {
+    const dispatch = useDispatch()
+    const {movies, loading} = useSelector(state => state.movies, shallowEqual)
+
+    useEffect(()=>{
+        dispatch(getTrending())
+    },[])
+
+
+    if(loading){
+        return(
+            <View><Text>Movies loading</Text></View>
+        )
+    }
     const renderHeader = ()=>{
         return(
         <View style={styles.headerContainer}>
@@ -23,15 +38,9 @@ const ListScreen = ({navigation}) => {
         >
             {renderHeader()}
             <ScrollView showsHorizontalScrollIndicator={false}>
-            <MovieCard navigation={navigation}/>
-            <MovieCard navigation={navigation}/>
-            <MovieCard navigation={navigation}/>
-            <MovieCard navigation={navigation}/>
-            <MovieCard navigation={navigation}/>
-            <MovieCard navigation={navigation}/>
-            <MovieCard navigation={navigation}/>
-            <MovieCard navigation={navigation}/>
-            <MovieCard navigation={navigation}/>
+           {
+               movies.map((movie, index) => <MovieCard key={`${movie.id}`} movie={movie} navigation={navigation} index={index} home/>)
+           }
             </ScrollView>
            
         </SafeAreaView>
