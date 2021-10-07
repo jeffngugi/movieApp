@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView} from 'react-native'
+import { StyleSheet, Text, View, SafeAreaView, Image, ScrollView, ActivityIndicator} from 'react-native'
 import {icons} from '../constants/index'
 import {MovieCard} from '../components'
 import { useDispatch, useSelector, shallowEqual} from 'react-redux'
@@ -16,7 +16,9 @@ const ListScreen = ({navigation}) => {
 
     if(loading){
         return(
-            <View><Text>Movies loading</Text></View>
+            <View style={styles.loading}>
+                 <ActivityIndicator size="large" color="#0000ff"r/>
+            </View>
         )
     }
     const renderHeader = ()=>{
@@ -78,5 +80,9 @@ const styles = StyleSheet.create({
         width:25,
         height:25,
         tintColor:'white'
+    },
+    loading:{
+        justifyContent:'center',
+        flex:1
     }
 })
